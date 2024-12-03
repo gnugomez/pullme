@@ -1,0 +1,31 @@
+{
+  "name": "pullme",
+  "module": "index.ts",
+  "version": "0.0.1", 
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "run": "tsx ./src/index.ts",
+    "build": "tsup",
+    "prepack": "pnpm run build",
+    "watch": "tsup --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.1",
+    "consola": "^3.2.3",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@slack/web-api": "^7.7.0",
+    "chalk": "^4.1.2",
+    "commander": "^10.0.0",
+    "date-fns": "^4.1.0"
+  },
+  "bin": {
+    "pullme": "./dist/index.cjs"
+  }
+}
