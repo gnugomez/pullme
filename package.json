@@ -1,8 +1,11 @@
 {
   "name": "pullme",
-  "module": "index.ts",
-  "version": "0.0.1", 
   "type": "module",
+  "version": "0.0.1",
+  "module": "index.ts",
+  "bin": {
+    "pullme": "./dist/index.cjs"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -10,14 +13,9 @@
     "run": "tsx ./src/index.ts",
     "build": "tsup",
     "prepack": "pnpm run build",
-    "watch": "tsup --watch"
-  },
-  "devDependencies": {
-    "@types/node": "^22.9.1",
-    "consola": "^3.2.3",
-    "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "watch": "tsup --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@slack/web-api": "^7.7.0",
@@ -25,7 +23,13 @@
     "commander": "^10.0.0",
     "date-fns": "^4.1.0"
   },
-  "bin": {
-    "pullme": "./dist/index.cjs"
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.11.2",
+    "@types/node": "^22.9.1",
+    "consola": "^3.2.3",
+    "eslint": "^9.16.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   }
 }

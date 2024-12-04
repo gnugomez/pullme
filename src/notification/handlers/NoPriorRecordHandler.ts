@@ -1,13 +1,13 @@
-import { log } from "../..";
-import type { NotificationDecisionHandler, NotificationDecisionHandlerContext } from "../types";
+import type { NotificationDecisionHandler, NotificationDecisionHandlerContext } from '../types'
+import { log } from '../..'
 
 export class NoPriorRecordHandler implements NotificationDecisionHandler {
   canHandle(context: NotificationDecisionHandlerContext): boolean {
-    return !context.notificationHistory[context.pr.id];
+    return !context.notificationHistory[context.pr.id]
   }
 
   handle(context: NotificationDecisionHandlerContext) {
-    log.debug(`NoPriorRecordHandler: Notification should be sent for PR ${context.pr.id} because it has no prior record.`);
-    return { sendNotification: true, lastNotifiedDate: new Date() };
+    log.debug(`NoPriorRecordHandler: Notification should be sent for PR ${context.pr.id} because it has no prior record.`)
+    return { sendNotification: true, lastNotifiedDate: new Date() }
   }
 }

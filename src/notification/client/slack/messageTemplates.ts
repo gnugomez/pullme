@@ -1,55 +1,53 @@
-import type { Block, KnownBlock } from "@slack/web-api";
-import type { PullRequest } from "../../../pr/type";
-import { NotificationMessages, type NotificationTone } from "../../types";
-
+import type { Block, KnownBlock } from '@slack/web-api'
+import type { PullRequest } from '../../../pr/type'
+import { NotificationMessages, type NotificationTone } from '../../types'
 
 export function createSlackMessageBlocks(pr: PullRequest, tone: NotificationTone, daysSinceCreation: number): (KnownBlock | Block)[] {
   return [
     {
-      type: "section",
+      type: 'section',
       text: {
-        type: "mrkdwn",
+        type: 'mrkdwn',
         text: `*${tone}*`,
       },
     },
     {
-      type: "divider",
+      type: 'divider',
     },
     {
-      type: "section",
+      type: 'section',
       text: {
-        type: "mrkdwn",
+        type: 'mrkdwn',
         text: `${NotificationMessages[tone]}`,
       },
     },
     {
-      type: "context",
+      type: 'context',
       elements: [{
-        type: "mrkdwn",
+        type: 'mrkdwn',
         text: `${pr.title}`,
-      },
-      {
-        type: "mrkdwn",
+      }, {
+        type: 'mrkdwn',
         text: `Author: ${pr.author.display_name} | Days Open: ${daysSinceCreation}`,
       }],
     },
     {
-      type: "actions",
+      type: 'actions',
       elements: [
         {
-          type: "button",
+          type: 'button',
           text: {
-            type: "plain_text",
-            text: "👀 Review",
+            type: 'plain_text',
+            text: '👀 Review',
           },
           url: pr.links.html.href,
-          action_id: "noop",
+          action_id: 'noop',
         },
       ],
     },
-  ];
+  ]
 }
 
 export function createPlainTextNotification(tone: NotificationTone) {
-  return `${tone} - ${NotificationMessages[tone]}`;
+  return `${tone} - ${NotificationMessages[tone]}`
 }
