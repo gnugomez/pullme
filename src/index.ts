@@ -22,9 +22,9 @@ interface ProgramOptions {
   repository: string
   channel: string
   slackToken: string
-  pollingInterval?: string
   logLevel: string
   notificationTrackerPath: string
+  requiredApprovals: string
 }
 
 async function main() {
@@ -38,6 +38,7 @@ async function main() {
     .requiredOption('-r, --repository <repository>', 'Bitbucket repository')
     .requiredOption('-c, --channel <channel>', 'Slack channel')
     .requiredOption('-st, --slack-token <slackToken>', 'Slack token')
+    .option('-a, --required-approvals <requiredApprovals>', 'Minimum required approvals', '2')
     .option('-l, --log-level <level>', 'Log level', '3')
     .option('-n, --notification-tracker-path <path>', 'Notification tracker path', path.join(process.cwd(), 'pr_notification_tracker.json'))
     .parse(process.argv)
@@ -66,11 +67,9 @@ async function main() {
     { tone: NotificationTone.CRITICAL, hours: 36 },
   ]
 
-  const minimumRequiredApprovals = 2
-
   const notificationDecisionHandlers = [
     new InProgressMergeTasksHandler(),
-    new SufficientApprovalsHandler(minimumRequiredApprovals),
+    new SufficientApprovalsHandler(Number.parseInt(options.requiredApprovals)),
     new NoPriorRecordHandler(),
     new IntervalExceededHandler(),
   ]
