@@ -1,7 +1,8 @@
 import type { PullRequest } from '../../../pr/type'
 import type { NotificationClient, NotificationTone } from '../../types'
-import { WebClient } from '@slack/web-api'
+import { type ChatPostMessageArguments, WebClient } from '@slack/web-api'
 import { differenceInDays } from 'date-fns'
+import { log } from '../../..'
 import { createPlainTextNotification, createSlackMessageBlocks } from './messageTemplates'
 
 export class SlackNotificationClient implements NotificationClient {
@@ -18,22 +19,35 @@ export class SlackNotificationClient implements NotificationClient {
     const currentDate = new Date()
     const daysSinceCreation = differenceInDays(currentDate, prCreatedDate)
 
-    await this.ensureBotInChannel().then(() => this.slackClient.chat.postMessage({
+    await this.sendMessageWithRetry({
       channel: this.channel,
       text: createPlainTextNotification(tone),
       blocks: createSlackMessageBlocks(pr, tone, daysSinceCreation),
-    }))
+    })
   }
 
   async sendNotification(message: string): Promise<void> {
-    await this.ensureBotInChannel().then(() => this.slackClient.chat.postMessage({
+    await this.sendMessageWithRetry({
       channel: this.channel,
       text: message,
-    }))
+    })
   }
 
-  private async ensureBotInChannel(): Promise<void> {
-    await this.joinChannel()
+  private async sendMessageWithRetry(messagePayload: ChatPostMessageArguments, retries = 2): Promise<void> {
+    try {
+      await this.slackClient.chat.postMessage(messagePayload)
+    }
+    catch (error: any) {
+      if ((error.data?.error === 'not_in_channel') && retries > 0) {
+        log.warn(`The bot is not in the channel: ${this.channel}. Attempting to join the channel...`)
+        await this.joinChannel()
+        log.info('Successfully joined the channel. Retrying message send...')
+        await this.sendMessageWithRetry(messagePayload, retries - 1)
+      }
+      else {
+        throw error
+      }
+    }
   }
 
   private async joinChannel(): Promise<void> {
