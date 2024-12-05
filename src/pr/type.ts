@@ -26,9 +26,13 @@ export interface PullRequest {
   author: {
     display_name: string
   }
-  reviewers: Array<{
-    display_name: string
-    account_id: string
+  participants: Array<{
+    role: 'REVIEWER' | 'PARTICIPANT'
+    user: {
+      display_name: string
+      account_id: string
+    }
+    approved: boolean
   }>
   mergeTasks: Array<MergeTask>
 }

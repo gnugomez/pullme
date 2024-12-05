@@ -7,6 +7,7 @@ import { SlackNotificationClient } from './notification/client/slack/SlackNotifi
 import { InProgressMergeTasksHandler } from './notification/handlers/InProgressMergeTasksHandler'
 import { IntervalExceededHandler } from './notification/handlers/IntervalExceededHandler'
 import { NoPriorRecordHandler } from './notification/handlers/NoPriorRecordHandler'
+import { SufficientApprovalsHandler } from './notification/handlers/SufficientApprovalsHandler'
 import { FileNotificationHistoryRepository } from './notification/history/FileNotificationHistoryRepository'
 import { NotificationManager } from './notification/NotificatonManager'
 import { NotificationTone } from './notification/types'
@@ -75,8 +76,11 @@ async function main() {
     { tone: NotificationTone.CRITICAL, hours: 36 },
   ]
 
+  const minimumRequiredApprovals = 2
+
   const notificationDecisionHandlers = [
     new InProgressMergeTasksHandler(),
+    new SufficientApprovalsHandler(minimumRequiredApprovals),
     new NoPriorRecordHandler(),
     new IntervalExceededHandler(),
   ]
