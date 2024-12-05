@@ -27,15 +27,6 @@ interface ProgramOptions {
   notificationTrackerPath: string
 }
 
-async function runPeriodically(fn: () => Promise<void>, waitTimeMs: number) {
-  log.info('Starting press Ctrl+C to stop')
-  while (true) {
-    await fn()
-    log.info(`Waiting for ${waitTimeMs / 1000} seconds before next run (press Ctrl+C to stop)...`)
-    await new Promise(resolve => setTimeout(resolve, waitTimeMs))
-  }
-}
-
 async function main() {
   const program = new Command('pullme')
 
@@ -47,7 +38,6 @@ async function main() {
     .requiredOption('-r, --repository <repository>', 'Bitbucket repository')
     .requiredOption('-c, --channel <channel>', 'Slack channel')
     .requiredOption('-st, --slack-token <slackToken>', 'Slack token')
-    .option('-p, --polling-interval <interval>', 'Polling interval in seconds')
     .option('-l, --log-level <level>', 'Log level', '3')
     .option('-n, --notification-tracker-path <path>', 'Notification tracker path', path.join(process.cwd(), 'pr_notification_tracker.json'))
     .parse(process.argv)
@@ -97,12 +87,7 @@ async function main() {
     notificationManager,
   )
 
-  if (!options.pollingInterval) {
-    await prReminder.run()
-    return
-  }
-
-  await runPeriodically(() => prReminder.run(), Number.parseInt(options.pollingInterval) * 1000)
+  await prReminder.run()
 }
 
 main().catch(log.fatal)
