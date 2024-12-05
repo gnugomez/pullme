@@ -3,6 +3,10 @@ import type { PullRequest } from '../../../pr/type'
 import { NotificationMessages, type NotificationTone } from '../../types'
 
 export function createSlackMessageBlocks(pr: PullRequest, tone: NotificationTone, daysSinceCreation: number): (KnownBlock | Block)[] {
+  const participants = pr.participants.filter(p => p.role === 'REVIEWER')
+    .map(participant => `${participant.approved ? '⭐️' : '🐢'} ${participant.user.display_name}`)
+    .join(', ')
+
   return [
     {
       type: 'section',
@@ -29,7 +33,12 @@ export function createSlackMessageBlocks(pr: PullRequest, tone: NotificationTone
       }, {
         type: 'mrkdwn',
         text: `Author: ${pr.author.display_name} | Days Open: ${daysSinceCreation}`,
-      }],
+      }, ...(participants.length > 0
+        ? [{
+            type: 'mrkdwn',
+            text: `Participants: ${participants}`,
+          } as const]
+        : [])],
     },
     {
       type: 'actions',

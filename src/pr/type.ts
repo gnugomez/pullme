@@ -14,6 +14,15 @@ export interface MergeTask {
   state: MergeTaskState
 }
 
+export interface Participant {
+  role: 'REVIEWER' | 'PARTICIPANT'
+  user: {
+    display_name: string
+    account_id: string
+  }
+  approved: boolean
+}
+
 export interface PullRequest {
   id: number
   title: string
@@ -26,14 +35,7 @@ export interface PullRequest {
   author: {
     display_name: string
   }
-  participants: Array<{
-    role: 'REVIEWER' | 'PARTICIPANT'
-    user: {
-      display_name: string
-      account_id: string
-    }
-    approved: boolean
-  }>
+  participants: Array<Participant>
   mergeTasks: Array<MergeTask>
 }
 
