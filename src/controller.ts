@@ -1,4 +1,4 @@
-import type { NotificationManager } from './notification/NotificatonManager'
+import type { NotificationManager } from './notification/NotificationManager'
 import type { PullRequestRepository } from './pr/type'
 import chalk from 'chalk'
 import { formatDistanceToNow } from 'date-fns'

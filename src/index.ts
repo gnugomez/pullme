@@ -8,8 +8,9 @@ import { InProgressMergeTasksHandler } from './notification/handlers/InProgressM
 import { IntervalExceededHandler } from './notification/handlers/IntervalExceededHandler'
 import { NoPriorRecordHandler } from './notification/handlers/NoPriorRecordHandler'
 import { SufficientApprovalsHandler } from './notification/handlers/SufficientApprovalsHandler'
+import { TaggedAsDraftHandler } from './notification/handlers/TaggedAsDraftHandler'
 import { FileNotificationHistoryRepository } from './notification/history/FileNotificationHistoryRepository'
-import { NotificationManager } from './notification/NotificatonManager'
+import { NotificationManager } from './notification/NotificationManager'
 import { NotificationTone } from './notification/types'
 import { BitBucketPullRequestRepository } from './pr/BitBucketPullRequestRepository'
 
@@ -68,6 +69,7 @@ async function main() {
   ]
 
   const notificationDecisionHandlers = [
+    new TaggedAsDraftHandler(),
     new InProgressMergeTasksHandler(),
     new SufficientApprovalsHandler(Number.parseInt(options.requiredApprovals)),
     new NoPriorRecordHandler(),
